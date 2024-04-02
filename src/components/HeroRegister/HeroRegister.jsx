@@ -20,6 +20,9 @@ const HeroRegester = () => {
     if (password.length<6) {
       setHeroError('Password should be at least 6 character or longer!!');
       return;
+    } else if(!/[A-Z]/.test(password)){
+      setHeroError('Your Password should have at least one uppercase character!!');
+      return;
     }
 
     createUserWithEmailAndPassword(auth, email, password)
