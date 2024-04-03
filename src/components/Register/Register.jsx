@@ -14,8 +14,9 @@ const Register = () => {
     e.preventDefault();
     
     const email = e.target.email.value;
+    const accepted = e.target.terms.checked;
     const password = e.target.password.value;
-    console.log(email, password);
+    console.log(email, password, accepted);
 
     //reset error & success
     setRegisterError('');
@@ -27,6 +28,9 @@ const Register = () => {
     } else if(!/[A-Z]/.test(password)){
       setRegisterError('Your Password should have at least one uppercase character!!');
       return;
+    } else if (!accepted) {
+       setRegisterError("Please accept terms and condition");
+       return;
     }
 
     
@@ -58,17 +62,22 @@ const Register = () => {
           required
         />
         <br />
+        <div className="relative ">
         <input
-          className="mb-4 relative w-3/4 py-2 px-4 bg-gray-400 rounded-md placeholder-black"
+          className="w-3/4 py-2 px-4 bg-gray-400 rounded-md placeholder-black"
           type={showPassword?"text":"password"}
           name="password"
           placeholder="Password"
           id=""
           required
         />
-        <span className="absolute text-xl" onClick={() => setShowPassword(!showPassword)}>{
+        <span className="absolute text-xl top-2.5 right-24" onClick={() => setShowPassword(!showPassword)}>{
           showPassword? <FaEyeSlash />: <FaEye></FaEye>
         }</span>
+        </div>
+        <br />
+        <input className="mr-4 mb-6" type="checkbox" name="terms" id="terms" />
+        <label htmlFor="terms">Accept our <a href="">terms and condition</a></label>
         <br />
         <input
           className="btn btn-primary mb-4 w-3/4   text-2xl font-semibold rounded-xl"

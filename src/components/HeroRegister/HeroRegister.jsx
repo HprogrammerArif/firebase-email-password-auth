@@ -1,35 +1,43 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import auth from "../../firebase/firebase.config";
 import { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const HeroRegester = () => {
   const [heroError, setHeroError] = useState("");
-  const [heroSuccess, setHeroSuccess] = useState('');
+  const [heroSuccess, setHeroSuccess] = useState("");
+  const [heroShowPassword, setHeroShowPassword] = useState(false);
 
   const handleRegister = (e) => {
     e.preventDefault();
     console.log("Submiting Form");
     const email = e.target.email.value;
+    const accepted = e.target.terms.checked;
     const password = e.target.password.value;
-    console.log(email, password);
+    console.log(email, password, accepted);
 
     //reset error & success
-    setHeroError('');
-    setHeroSuccess('');
+    setHeroError("");
+    setHeroSuccess("");
 
-    if (password.length<6) {
-      setHeroError('Password should be at least 6 character or longer!!');
+    if (password.length < 6) {
+      setHeroError("Password should be at least 6 character or longer!!");
       return;
-    } else if(!/[A-Z]/.test(password)){
-      setHeroError('Your Password should have at least one uppercase character!!');
+    } else if (!/[A-Z]/.test(password)) {
+      setHeroError(
+        "Your Password should have at least one uppercase character!!"
+      );
       return;
-    }
+    } else if (!accepted) {
+      setHeroError("Please accept terms and condition");
+      return;
+   }
 
     createUserWithEmailAndPassword(auth, email, password)
       .then((result) => {
         const user = result.user;
         console.log(user);
-        setHeroSuccess("Register Successfull")
+        setHeroSuccess("Register Successfull");
       })
       .catch((error) => {
         console.error(error);
@@ -64,17 +72,29 @@ const HeroRegester = () => {
                 required
               />
             </div>
-            <div className="form-control">
+
+            <div className="form-control ">
               <label className="label">
                 <span className="label-text">Password</span>
               </label>
+
+              <div className="relative ">
               <input
-                type="password"
+                type={heroShowPassword? "text":"password"}
                 name="password"
                 placeholder="password"
-                className="input input-bordered"
+                className="input w-full input-bordered "
                 required
               />
+
+              <span
+                className="absolute right-2 top-3 text-xl"
+                onClick={() => setHeroShowPassword(!heroShowPassword)}
+              >
+                {heroShowPassword ? <FaEyeSlash /> : <FaEye></FaEye>}
+              </span>
+              </div>
+
               <label className="label">
                 <a href="#" className="label-text-alt link link-hover">
                   Forgot password?
@@ -87,7 +107,6 @@ const HeroRegester = () => {
           </form>
         </div>
       </div>
-      
     </div>
   );
 };
