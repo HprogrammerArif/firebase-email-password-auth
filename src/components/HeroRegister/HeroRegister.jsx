@@ -31,7 +31,7 @@ const HeroRegester = () => {
     } else if (!accepted) {
       setHeroError("Please accept terms and condition");
       return;
-   }
+    }
 
     createUserWithEmailAndPassword(auth, email, password)
       .then((result) => {
@@ -79,20 +79,32 @@ const HeroRegester = () => {
               </label>
 
               <div className="relative ">
-              <input
-                type={heroShowPassword? "text":"password"}
-                name="password"
-                placeholder="password"
-                className="input w-full input-bordered "
-                required
-              />
+                <input
+                  type={heroShowPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="password"
+                  className="input w-full input-bordered "
+                  required
+                />
 
-              <span
-                className="absolute right-2 top-3 text-xl"
-                onClick={() => setHeroShowPassword(!heroShowPassword)}
-              >
-                {heroShowPassword ? <FaEyeSlash /> : <FaEye></FaEye>}
-              </span>
+                <span
+                  className="absolute right-2 top-3 text-xl"
+                  onClick={() => setHeroShowPassword(!heroShowPassword)}
+                >
+                  {heroShowPassword ? <FaEyeSlash /> : <FaEye></FaEye>}
+                </span>
+              </div>
+
+              <div>
+                <input
+                  className="mr-4 mb-6"
+                  type="checkbox"
+                  name="terms"
+                  id="terms"
+                />
+                <label htmlFor="terms">
+                  Accept our <a href="">terms and condition</a>
+                </label>
               </div>
 
               <label className="label">

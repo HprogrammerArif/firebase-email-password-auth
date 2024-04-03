@@ -1,25 +1,56 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { sendPasswordResetEmail, signInWithEmailAndPassword } from "firebase/auth";
 import auth from "../../firebase/firebase.config";
+import { useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 const Login = () => {
+  const [registerError, setRegisterError] = useState("");
+  const [success, setSuccess] = useState("");
+  const emailRef = useRef(null);
 
-const handleLogin = e => {
-  e.preventDefault();
-  const email = e.target.email.value;
-  const password = e.target.password.value;
-  console.log(email, password);
+  const handleLogin = (e) => {
+    e.preventDefault();
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+    console.log(email, password);
 
-  //Add validation
+    //reset error & success
+    setRegisterError("");
+    setSuccess("");
 
-  signInWithEmailAndPassword(auth, email, password)
-  .then(result => {
-    const user = result.user;
-    console.log(user);
-  })
-  .catch(error => {
-    console.error(error)
-  })
-}
+    //Add validation
+
+    signInWithEmailAndPassword(auth, email, password)
+      .then((result) => {
+        const user = result.user;
+        console.log(user);
+        setSuccess("User Created Successfully");
+      })
+      .catch((error) => {
+        console.error(error);
+        setRegisterError(error.message);
+      });
+  };
+
+  const handleForgetPassword = () => {
+    const email = emailRef.current.value;
+    if (!email) {
+      console.log('Please Provide an email', emailRef.current.value);
+      return;
+    } else if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+       console.log('Please write a valid email');
+       return;
+    }
+
+    // Send validation email
+    sendPasswordResetEmail(auth, email)
+    .then(() => {
+      alert('Please check your email');
+    })
+    .catch(error => {
+      console.log(error);
+    })
+  }
 
   return (
     <div className="hero min-h-screen bg-base-200">
@@ -31,6 +62,11 @@ const handleLogin = e => {
             excepturi exercitationem quasi. In deleniti eaque aut repudiandae et
             a id nisi.
           </p>
+          {registerError && <p className="text-red-600">{registerError}</p>}
+          {success && (
+            <p className="text-green-600 text-xl font-bold">{success}</p>
+          )}
+          
         </div>
         <div className="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
           <form onSubmit={handleLogin} className="card-body">
@@ -43,6 +79,7 @@ const handleLogin = e => {
                 placeholder="email"
                 className="input input-bordered"
                 name="email"
+                ref={emailRef}
                 required
               />
             </div>
@@ -58,10 +95,11 @@ const handleLogin = e => {
                 required
               />
               <label className="label">
-                <a href="#" className="label-text-alt link link-hover">
+                <a onClick={handleForgetPassword} href="#" className="label-text-alt link link-hover">
                   Forgot password?
                 </a>
               </label>
+              <a>New to this website? please <Link className="underline" to='/register'>Register</Link> </a>
             </div>
             <div className="form-control mt-6">
               <button className="btn btn-primary">Login</button>
